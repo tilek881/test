@@ -30,7 +30,6 @@ CREATE TABLE products (
 );
 """)
 
-# Заполнение тестовыми данными
 cursor.executemany("INSERT INTO categories (code, title) VALUES (?, ?);", [
     ('FD', 'Food products'),
     ('EL', 'Electronics'),
@@ -54,20 +53,16 @@ VALUES (?, ?, ?, ?, ?, ?);
 
 connection.commit()
 
-
-# Программа
 def main():
     while True:
         print(
             "\nВы можете отобразить список продуктов по выбранному id магазина из перечня ниже, для выхода из программы введите цифру 0:\n")
-
-        # Вывод списка магазинов
+        
         cursor.execute("SELECT store_id, title FROM store;")
         stores = cursor.fetchall()
         for store in stores:
             print(f"{store[0]}. {store[1]}")
 
-        # Ввод пользователя
         try:
             user_input = int(input("\nВведите id магазина (или 0 для выхода): "))
         except ValueError:
@@ -78,14 +73,12 @@ def main():
             print("Выход из программы...")
             break
 
-        # Проверка наличия магазина
         cursor.execute("SELECT title FROM store WHERE store_id = ?;", (user_input,))
         store = cursor.fetchone()
         if not store:
             print("Магазин с таким id не найден, попробуйте снова.")
             continue
 
-        # Вывод продуктов для выбранного магазина
         print(f"\nТовары в магазине '{store[0]}':")
         cursor.execute("""
         SELECT p.title, c.title, p.unit_price, p.stock_quantity
@@ -106,7 +99,9 @@ def main():
 if __name__ == "__main__":
     main()
 
-# Закрытие соединения
+
+
+
 connection.close()
 
 
